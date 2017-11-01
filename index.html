@@ -17,7 +17,7 @@
             main() ; 
             async function main () { 
                 var context = new AudioContext();
-                var note = 67 ; 
+                var note = 70 ; 
                 var arrayBuffer = await(await fetch('./'+note+'l.mp3')).arrayBuffer();
                 var audioBuffer = await context.decodeAudioData(arrayBuffer);
                 var src = context.createBufferSource() ; 
