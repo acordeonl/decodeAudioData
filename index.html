@@ -20,6 +20,11 @@
                 var note = 67 ; 
                 var arrayBuffer = await(await fetch('./'+note+'l.mp3')).arrayBuffer();
                 var audioBuffer = await context.decodeAudioData(arrayBuffer);
+                var src = context.createBufferSource() ; 
+                src.buffer = audioBuffer ;  
+                src.start(2) ; 
+                src.loop = true ; 
+                src.connect(context.destination) ; 
                 var res = "note: " + note + " duration: " + audioBuffer.duration + " samples: " + audioBuffer.length ; 
                 document.getElementById('res').innerHTML = res ; 
 
