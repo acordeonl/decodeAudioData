@@ -1,1 +1,29 @@
-hello colo
+<html>
+    <head></head>
+    <body>
+        63l.wav => <b>duration: </b> 0.7491609977324263 <b>samples: </b>33038
+        </br>
+        67l.wav => <b>duration: </b> 1.1466666666666667 <b>samples: </b>50568
+        </br>
+        70l.wav => <b>duration: </b> 1.4371655328798185 <b>samples: </b>63379
+        </br>
+        75l.wav => <b>duration: </b> 1.7735374149659864 <b>samples: </b>78213
+        </br>
+        </br>
+        </br>
+        <b>Result</b>
+        <div id='res'></div>
+        <script>
+            main() ; 
+            async function main () { 
+                var context = new AudioContext();
+                var note = 67 ; 
+                var arrayBuffer = await(await fetch('/mp3s/'+note+'l.mp3')).arrayBuffer();
+                var audioBuffer = await context.decodeAudioData(arrayBuffer);
+                var res = "note: " + note + " duration: " + audioBuffer.duration + " samples: " + audioBuffer.length ; 
+                document.getElementById('res').innerHTML = res ; 
+
+            }
+        </script>
+    </body>
+</html>
