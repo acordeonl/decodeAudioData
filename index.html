@@ -111,7 +111,6 @@
                     let note = document.getElementById('note').value ;  
                     var arrayBuffer = await(await fetch('./'+note+'l.'+type)).arrayBuffer();
                     audioBuffer = await context.decodeAudioData(arrayBuffer);
-                    console.log(audioBuffer.getChannelData(0));
                     var res = note + "l." + type +" => <b>duration:</b> " + audioBuffer.duration + "   <b>samples:</b> " + audioBuffer.length ; 
                     document.getElementById('res').innerHTML = res ;        
                 } catch (error) {
