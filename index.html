@@ -59,6 +59,8 @@
                 <option value="mp3">mp3</option>
                 <option value="ogg">ogg</option>
                 <option value="wav">wav</option>
+                <option value="m4a">m4a</option>
+                <option value="flac">flac</option>
             </select>
             </br>
             </br>
@@ -90,7 +92,9 @@
                 if(noteIsOn)
                     toggleNote() ; 
                 document.getElementById('error').innerHTML = "" ; 
-                document.getElementById('res').innerHTML = "" ;        
+                document.getElementById('res').innerHTML = "" ;
+                src= undefined ; 
+                audioBuffer = undefined ;      
                 
                 try {
                     let type = document.getElementById('type').value ;  
@@ -104,6 +108,8 @@
                 }
             }
             function toggleNote () {
+                if(audioBuffer === undefined)
+                    return ; 
                 if(noteIsOn) { 
                     noteOff() ;
                     document.getElementById('action').innerHTML = 'play' ; 
