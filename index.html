@@ -86,7 +86,7 @@
             var audioBuffer , src ; 
             var browser = get_browser();
             var OS = getOS() ; 
-            document.getElementById('browser').innerHTML = browser.name + " v" + browser.version + " " + OS ; 
+            document.getElementById('browser').innerHTML = browser.name + " v" + browser.version + " " + OS + " " + context.sampleRate; 
             loadAudio('mp3',70) ; 
             async function loadAudio() { 
                 if(noteIsOn)
