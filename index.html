@@ -74,18 +74,28 @@
         </br>
         </br>
         <div controls>
-          
+            <button style="margin-left:100px;" onclick="downloadOgg()">Download ogg</button>
         </div>
         </br>
         </br>
         </br>
         <div id='error'></div>
         <script>
+        // default path is on the same directory as this HTML
+        OggVorbisEncoderConfig = {
+          memoryInitializerPrefixURL: "javascripts/"   // must end with slash
+          // => changed to javascripts/OggVorbisEncoder.min.js.mem
+        };
+        </script>
+        <script src="./javascripts/OggVorbisEncoder.js"></script>
+            
+        <script>
             var noteIsOn = false ;
             var context = new AudioContext();
             var audioBuffer , src ; 
             var browser = get_browser();
             var OS = getOS() ; 
+            
             document.getElementById('browser').innerHTML = browser.name + " v" + browser.version + " " + OS + " " + context.sampleRate; 
             loadAudio('mp3',70) ; 
             async function loadAudio() { 
@@ -101,6 +111,7 @@
                     let note = document.getElementById('note').value ;  
                     var arrayBuffer = await(await fetch('./'+note+'l.'+type)).arrayBuffer();
                     audioBuffer = await context.decodeAudioData(arrayBuffer);
+                    console.log(audioBuffer.getChannelData(0));
                     var res = note + "l." + type +" => <b>duration:</b> " + audioBuffer.duration + "   <b>samples:</b> " + audioBuffer.length ; 
                     document.getElementById('res').innerHTML = res ;        
                 } catch (error) {
@@ -119,6 +130,17 @@
                     document.getElementById('action').innerHTML = 'stop' ;
                 }
                 noteIsOn = !noteIsOn ; 
+            }
+            function downloadOgg() {
+                var encoder = new OggVorbisEncoder(44100, 1, 1) ; 
+                encoder.encode([audioBuffer.getChannelData(0)]) ; 
+                var a = document.createElement('a');
+                a.download = "view-audio.ogg";
+                var blob = encoder.finish(["application/ogg"]) ; 
+                var url = window.URL.createObjectURL(blob);
+                a.href = url;
+                a.click();
+                window.URL.revokeObjectURL(url);
             }
             function noteOn() {
                 if(audioBuffer === undefined)
