@@ -87,7 +87,8 @@
             document.getElementById('browser').innerHTML = browser.name + " v" + browser.version + " " + OS ; 
             loadAudio('mp3',70) ; 
             async function loadAudio() { 
-                noteOff() ; 
+                if(noteIsOn)
+                    toggleNote() ; 
                 document.getElementById('error').innerHTML = "" ; 
                 document.getElementById('res').innerHTML = "" ;        
                 
@@ -100,7 +101,7 @@
                     document.getElementById('res').innerHTML = res ;        
                 } catch (error) {
                     document.getElementById('error').innerHTML = error ; 
-                    play                }
+                }
             }
             function toggleNote () {
                 if(noteIsOn) { 
