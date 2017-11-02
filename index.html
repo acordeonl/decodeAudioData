@@ -1,5 +1,28 @@
 <html>
-    <head></head>
+    <head>
+        <style>
+            body{
+                font-size: 24px ; 
+                margin:50px ; 
+            }
+            [options],[controls]{
+                margin-top:10px ; 
+                margin-left: 20px ; 
+            }
+            #error { 
+                color:red ; 
+            }
+            [result] {
+                float:left ; 
+            }
+            select{
+                font-size: 24px ; 
+            }
+            button{
+                font-size: 24px ; 
+            }
+        </style>
+    </head>
     <body>
         63l.wav => <b>duration: </b> 0.7491609977324263 <b>samples: </b>33038
         </br>
@@ -12,22 +35,73 @@
         </br>
         </br>
         <b>Result</b>
-        <div id='res'></div>
+        </br>
+        </br>
+        <div options>
+            <select id='type' onchange='loadAudio()'>
+              <option value="wav">wav</option>
+              <option value="mp3">mp3</option>
+              <option value="ogg">ogg</option>
+            </select>
+            <select id='note' onchange='loadAudio()'>
+              <option value="63">63</option>
+              <option value="67">67</option>
+              <option value="70">70</option>
+              <option value="75">75</option>
+            </select>
+            </br>
+            </br>
+            </br>
+            <div result >
+                <div id='res'></div>
+                <button onclick = 'noteOn()'>play</button>
+                <button onclick= 'noteOff()'>stop</button>
+            </div>
+                
+        </div>
+        </br>
+        </br>
+        <div controls>
+          
+        </div>
+        </br>
+        </br>
+        </br>
+        <div id='error'></div>
         <script>
-            main() ; 
-            async function main () { 
-                var context = new AudioContext();
-                var note = 70 ; 
-                var arrayBuffer = await(await fetch('./'+note+'l.mp3')).arrayBuffer();
-                var audioBuffer = await context.decodeAudioData(arrayBuffer);
-                var src = context.createBufferSource() ; 
+            var context = new AudioContext();
+            var audioBuffer , src ; 
+            loadAudio('mp3',70) ; 
+            async function loadAudio() { 
+                noteOff() ; 
+                document.getElementById('error').innerHTML = "" ; 
+                document.getElementById('res').innerHTML = "" ;        
+                
+                try {
+                    let type = document.getElementById('type').value ;  
+                    let note = document.getElementById('note').value ;  
+                    var arrayBuffer = await(await fetch('./'+note+'l.'+type)).arrayBuffer();
+                    audioBuffer = await context.decodeAudioData(arrayBuffer);
+                    var res = "note: " + note + " duration: " + audioBuffer.duration + " samples: " + audioBuffer.length ; 
+                    document.getElementById('res').innerHTML = res ;        
+                } catch (error) {
+                    document.getElementById('error').innerHTML = error ; 
+                }
+            }
+            function noteOn() {
+                if(audioBuffer === undefined)
+                    return ; 
+                noteOff() ; 
+                src = context.createBufferSource() ; 
                 src.buffer = audioBuffer ;  
-                src.start(2) ; 
+                src.start(0) ; 
                 src.loop = true ; 
                 src.connect(context.destination) ; 
-                var res = "note: " + note + " duration: " + audioBuffer.duration + " samples: " + audioBuffer.length ; 
-                document.getElementById('res').innerHTML = res ; 
-
+            }
+            function noteOff() {
+                if(src === undefined)
+                    return  ; 
+                src.stop(0) ; 
             }
         </script>
     </body>
