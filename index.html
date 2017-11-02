@@ -1,9 +1,11 @@
+
 <html>
     <head>
         <style>
             body{
                 font-size: 24px ; 
                 margin:50px ; 
+                line-height: 120% ; 
             }
             [options],[controls]{
                 margin-top:10px ; 
@@ -21,42 +23,50 @@
             button{
                 font-size: 24px ; 
             }
+            [title]{
+                color:rgb(55, 55, 156) ; 
+            }
         </style>
     </head>
     <body>
-        63l.wav => <b>duration: </b> 0.7491609977324263 <b>samples: </b>33038
+        <div title>
+            <b>
+               Reference [Chrome v62 Linux]
+            </b>
+        </div>
         </br>
-        67l.wav => <b>duration: </b> 1.1466666666666667 <b>samples: </b>50568
+        63l.wav => <b>duration: </b> 0.</b>7491609977324263 <b>  samples: </b>33038
         </br>
-        70l.wav => <b>duration: </b> 1.4371655328798185 <b>samples: </b>63379
+        67l.wav => <b>duration: </b> 1.1466666666666667 <b>  samples: </b>50568
         </br>
-        75l.wav => <b>duration: </b> 1.7735374149659864 <b>samples: </b>78213
+        70l.wav => <b>duration: </b> 1.4371655328798185 <b>  samples: </b>63379
         </br>
-        </br>
-        </br>
-        <b>Result</b>
+        75l.wav => <b>duration: </b> 1.7735374149659864 <b>  samples: </b>78213
         </br>
         </br>
+       
         <div options>
-            <select id='type' onchange='loadAudio()'>
-              <option value="wav">wav</option>
-              <option value="mp3">mp3</option>
-              <option value="ogg">ogg</option>
-            </select>
-            <select id='note' onchange='loadAudio()'>
+            <span title>
+                <b>Result  [<span id='browser'></span>]  </b>
+            </span>
+            <select style='margin-left:20px' id='note' onchange='loadAudio()'>
               <option value="63">63</option>
               <option value="67">67</option>
               <option value="70">70</option>
               <option value="75">75</option>
             </select>
-            </br>
+            <select id='type' onchange='loadAudio()'>
+                <option value="mp3">mp3</option>
+                <option value="ogg">ogg</option>
+                <option value="wav">wav</option>
+            </select>
             </br>
             </br>
             <div result >
-                <div id='res'></div>
-                <button onclick = 'noteOn()'>play</button>
-                <button onclick= 'noteOff()'>stop</button>
+                <button  id='action' style='margin-left:20px' onclick = 'toggleNote()'>play</button>
+                <span id='res' style="margin-left: 20px;"></span>
             </div>
+          
                 
         </div>
         </br>
@@ -69,8 +79,12 @@
         </br>
         <div id='error'></div>
         <script>
+            var noteIsOn = false ;
             var context = new AudioContext();
             var audioBuffer , src ; 
+            var browser = get_browser();
+            var OS = getOS() ; 
+            document.getElementById('browser').innerHTML = browser.name + " v" + browser.version + " " + OS ; 
             loadAudio('mp3',70) ; 
             async function loadAudio() { 
                 noteOff() ; 
@@ -82,11 +96,22 @@
                     let note = document.getElementById('note').value ;  
                     var arrayBuffer = await(await fetch('./'+note+'l.'+type)).arrayBuffer();
                     audioBuffer = await context.decodeAudioData(arrayBuffer);
-                    var res = "note: " + note + " duration: " + audioBuffer.duration + " samples: " + audioBuffer.length ; 
+                    var res = note + "l." + type +" => <b>duration:</b> " + audioBuffer.duration + "   <b>samples:</b> " + audioBuffer.length ; 
                     document.getElementById('res').innerHTML = res ;        
                 } catch (error) {
                     document.getElementById('error').innerHTML = error ; 
+                    play                }
+            }
+            function toggleNote () {
+                if(noteIsOn) { 
+                    noteOff() ;
+                    document.getElementById('action').innerHTML = 'play' ; 
+                } 
+                else{
+                    noteOn() ; 
+                    document.getElementById('action').innerHTML = 'stop' ;
                 }
+                noteIsOn = !noteIsOn ; 
             }
             function noteOn() {
                 if(audioBuffer === undefined)
@@ -102,6 +127,36 @@
                 if(src === undefined)
                     return  ; 
                 src.stop(0) ; 
+            }
+            function get_browser() {
+               var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefo OSName="Linux";x|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+               if(/trident/i.test(M[1])){
+                   tem=/\brv[ :]+(\d+)/g.exec(ua) || []; 
+                   return {name:'IE',version:(tem[1]||'')};
+                   }   
+               if(M[1]==='Chrome'){
+                   tem=ua.match(/\bOPR|Edge\/(\d+)/)
+                   if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+                   }   
+               M=M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+               if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+               return {
+                 name: M[0],
+                 version: M[1]
+               };
+            }
+            function getOS() {
+                var OSName = "Unknown";
+                if (window.navigator.userAgent.indexOf("Windows NT 10.0")!= -1) OSName="Windows 10";
+                if (window.navigator.userAgent.indexOf("Windows NT 6.2") != -1) OSName="Windows 8";
+                if (window.navigator.userAgent.indexOf("Windows NT 6.1") != -1) OSName="Windows 7";
+                if (window.navigator.userAgent.indexOf("Windows NT 6.0") != -1) OSName="Windows Vista";
+                if (window.navigator.userAgent.indexOf("Windows NT 5.1") != -1) OSName="Windows XP";
+                if (window.navigator.userAgent.indexOf("Windows NT 5.0") != -1) OSName="Windows 2000";
+                if (window.navigator.userAgent.indexOf("Mac")            != -1) OSName="Mac/iOS";
+                if (window.navigator.userAgent.indexOf("X11")            != -1) OSName="UNIX";
+                if (window.navigator.userAgent.indexOf("Linux")          != -1) OSName="Linux";
+                return OSName ;
             }
         </script>
     </body>
