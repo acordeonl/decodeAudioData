@@ -80,6 +80,7 @@
         </br>
         </br>
         <div id='error'></div>
+        <!-- <script src="/dist/bundle.js"></script> -->
         <script>
         // default path is on the same directory as this HTML
         OggVorbisEncoderConfig = {
@@ -109,7 +110,7 @@
                 try {
                     let type = document.getElementById('type').value ;  
                     let note = document.getElementById('note').value ;  
-                    var arrayBuffer = await(await fetch('./'+note+'l.'+type)).arrayBuffer();
+                    var arrayBuffer = await(await fetch('/audio/'+note+'l.'+type)).arrayBuffer();
                     audioBuffer = await context.decodeAudioData(arrayBuffer);
                     var res = note + "l." + type +" => <b>duration:</b> " + audioBuffer.duration + "   <b>samples:</b> " + audioBuffer.length ; 
                     document.getElementById('res').innerHTML = res ;        
